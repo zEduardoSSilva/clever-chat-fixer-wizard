@@ -16,20 +16,26 @@ interface Message {
 interface ChatInterfaceProps {
   n8nWebhookUrl?: string;
   title?: string;
+  initialMessages?: Message[];
+  onMessagesChange?: (messages: Message[]) => void;
 }
 
 export function ChatInterface({ 
   n8nWebhookUrl = "", 
-  title = "Chat Inteligente" 
+  title = "Chat Inteligente",
+  initialMessages,
+  onMessagesChange
 }: ChatInterfaceProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      content: "Olá! Sou seu assistente inteligente. Como posso ajudá-lo hoje?",
-      isUser: false,
-      timestamp: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>(
+    initialMessages || [
+      {
+        id: "welcome",
+        content: "Olá! Sou seu assistente inteligente. Como posso ajudá-lo hoje?",
+        isUser: false,
+        timestamp: new Date(),
+      },
+    ]
+  );
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -40,7 +46,8 @@ export function ChatInterface({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+    onMessagesChange?.(messages);
+  }, [messages, onMessagesChange]);
 
   const sendToN8n = async (message: string): Promise<string> => {
     if (!n8nWebhookUrl) {
@@ -64,20 +71,32 @@ export function ChatInterface({
         throw new Error(`Erro ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
+      // Verificar se a resposta tem conteúdo antes de tentar fazer parse
+      const rawResponseText = await response.text();
+      if (!rawResponseText.trim()) {
+        return "Webhook retornou resposta vazia. Verifique a configuração do n8n.";
+      }
+
+      let data;
+      try {
+        data = JSON.parse(rawResponseText);
+      } catch (parseError) {
+        console.log("Resposta do webhook não é JSON válido:", rawResponseText);
+        return rawResponseText; // Retorna o texto puro se não for JSON
+      }
       
       // Processar diferentes formatos de resposta do n8n
-      let responseText = "";
+      let processedResponse = "";
       
       if (data.response) {
         // Formato padrão: {"response": "texto"}
-        responseText = data.response;
+        processedResponse = data.response;
       } else if (data.output) {
         // Formato do seu n8n: {"output": {...}}
         if (data.output.Resumo) {
-          responseText = data.output.Resumo;
+          processedResponse = data.output.Resumo;
         } else if (data.output.Descricao) {
-          responseText = data.output.Descricao;
+          processedResponse = data.output.Descricao;
         } else {
           // Se não tem Resumo nem Descrição, pegar todos os campos relevantes
           const campos = [];
@@ -85,17 +104,17 @@ export function ChatInterface({
           if (data.output.Valor) campos.push(`**Porção:** ${data.output.Valor}`);
           if (data.output.Categoria) campos.push(`**Categoria:** ${data.output.Categoria}`);
           if (data.output.Resumo) campos.push(`**Resumo:** ${data.output.Resumo}`);
-          responseText = campos.length > 0 ? campos.join('\n\n') : JSON.stringify(data.output, null, 2);
+          processedResponse = campos.length > 0 ? campos.join('\n\n') : JSON.stringify(data.output, null, 2);
         }
       } else if (data.message) {
         // Outro formato possível: {"message": "texto"}
-        responseText = data.message;
+        processedResponse = data.message;
       } else {
         // Fallback: converter o objeto inteiro para texto legível
-        responseText = JSON.stringify(data, null, 2);
+        processedResponse = JSON.stringify(data, null, 2);
       }
       
-      return responseText || "Resposta recebida com sucesso!";
+      return processedResponse || "Resposta recebida com sucesso!";
     } catch (error) {
       console.error("Erro ao enviar mensagem para n8n:", error);
       throw error;
@@ -168,38 +187,31 @@ export function ChatInterface({
   };
 
   return (
-    <Card className="flex flex-col h-[600px] max-w-2xl mx-auto shadow-lg border-chat-border bg-gradient-chat">
-      <CardHeader className="flex-shrink-0 pb-3 border-b border-chat-border bg-card/80 backdrop-blur-sm">
+    <div className="flex flex-col h-full bg-chat-background">
+      {/* Chat Header */}
+      <div className="flex-shrink-0 p-4 border-b border-chat-border">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold bg-gradient-primary bg-clip-text text-transparent">
+          <h2 className="text-lg font-semibold text-foreground">
             {title}
-          </CardTitle>
-          <div className="flex gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearChat}
-              className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 w-8 p-0 hover:bg-muted"
-            >
-              <Settings className="h-4 w-4" />
-            </Button>
-          </div>
+          </h2>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={clearChat}
+            className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
         </div>
         {!n8nWebhookUrl && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground mt-2">
             Configure o webhook do n8n para ativar respostas inteligentes
           </p>
         )}
-      </CardHeader>
+      </div>
 
-      <CardContent className="flex-1 overflow-hidden p-0 bg-chat-background">
+      {/* Messages Area */}
+      <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto scroll-smooth">
           <div className="py-4">
             {messages.map((message) => (
@@ -220,13 +232,16 @@ export function ChatInterface({
             <div ref={messagesEndRef} />
           </div>
         </div>
-      </CardContent>
+      </div>
 
-      <ChatInput
-        onSendMessage={handleSendMessage}
-        disabled={false}
-        isLoading={isLoading}
-      />
-    </Card>
+      {/* Chat Input */}
+      <div className="flex-shrink-0 border-t border-chat-border">
+        <ChatInput
+          onSendMessage={handleSendMessage}
+          disabled={false}
+          isLoading={isLoading}
+        />
+      </div>
+    </div>
   );
 }
