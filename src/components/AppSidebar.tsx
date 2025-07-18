@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageSquare, Settings, Plus, Trash2 } from "lucide-react";
+import { Bot, Settings, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -46,7 +46,7 @@ export function AppSidebar({
       <div className="flex flex-col p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 rounded-lg bg-gradient-primary">
-            <MessageSquare className="h-5 w-5 text-white" />
+            <Bot className="h-5 w-5 text-white" />
           </div>
           <h1 className="text-lg font-semibold text-sidebar-foreground">
             Clever N8N Chat
@@ -66,7 +66,7 @@ export function AppSidebar({
         <div className="space-y-1 py-2">
           {conversations.length === 0 ? (
             <div className="text-center text-sidebar-muted py-8">
-              <MessageSquare className="h-8 w-8 mx-auto mb-2 text-sidebar-muted" />
+              <Bot className="h-8 w-8 mx-auto mb-2 text-sidebar-muted" />
               <p className="text-sm">Nenhuma conversa ainda</p>
             </div>
           ) : (

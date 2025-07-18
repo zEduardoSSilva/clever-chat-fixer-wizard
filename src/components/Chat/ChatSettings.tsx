@@ -82,14 +82,14 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Configurações do Chat</CardTitle>
-        <CardDescription>
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0 p-6 border-b border-border">
+        <h2 className="text-xl font-semibold text-foreground">Configurações do Chat</h2>
+        <p className="text-sm text-muted-foreground mt-1">
           Configure a integração com n8n e personalize sua experiência de chat
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
+        </p>
+      </div>
+      <div className="flex-1 overflow-auto p-6">
         <Tabs defaultValue="webhook" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="webhook">Webhook n8n</TabsTrigger>
@@ -199,12 +199,12 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
         </Tabs>
 
         <div className="flex gap-2 mt-6">
-          <Button onClick={handleSaveSettings} className="flex-1">
+          <Button onClick={handleSaveSettings} className="w-full">
             <Save className="h-4 w-4 mr-2" />
             Salvar Configurações
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
