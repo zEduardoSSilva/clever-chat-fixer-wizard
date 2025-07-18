@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { Button } from "@/components/ui/button";
-import { Trash2, Settings } from "lucide-react";
+import { Trash2, Settings, Bot } from "lucide-react";
 import { useModernToast } from "@/hooks/use-modern-toast";
 
 interface Message {
@@ -190,22 +190,22 @@ export function ChatInterface({
   return (
     <div className="flex flex-col h-full relative" style={{ background: 'var(--chat-modern-bg)' }}>
       {/* Chat Header */}
-      <div className="flex-shrink-0 p-4 border-b border-chat-border">
+      <div className="flex-shrink-0 p-6 border-b border-border/20 bg-card/30 backdrop-blur-sm">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-foreground">
+          <h2 className="text-xl font-bold text-foreground">
             {title}
           </h2>
           <Button
             variant="ghost"
             size="sm"
             onClick={clearChat}
-            className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+            className="h-10 w-10 p-0 hover:bg-destructive/20 hover:text-destructive rounded-2xl transition-all duration-200 hover:scale-105"
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-5 w-5" />
           </Button>
         </div>
         {!n8nWebhookUrl && (
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="text-sm text-muted-foreground mt-3 font-medium">
             Configure o webhook do n8n para ativar respostas inteligentes
           </p>
         )}
@@ -213,19 +213,21 @@ export function ChatInterface({
 
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        <div className="h-full overflow-y-auto scroll-smooth">
-          <div className="py-4">
+        <div className="h-full overflow-y-auto scroll-smooth px-2">
+          <div className="py-6">
             {messages.map((message) => (
               <ChatMessage key={message.id} message={message} />
             ))}
             {isLoading && (
-              <div className="flex gap-3 p-4 max-w-[80%] mr-auto">
-                <div className="h-8 w-8 rounded-full bg-muted animate-pulse flex-shrink-0" />
-                <div className="bg-chat-message-bot border border-chat-border rounded-2xl rounded-bl-md px-4 py-3">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce delay-100" />
-                    <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce delay-200" />
+              <div className="flex gap-4 p-6 max-w-[85%] mr-auto">
+                <div className="h-10 w-10 rounded-full bg-card/80 border border-border/30 animate-pulse flex-shrink-0 flex items-center justify-center">
+                  <Bot className="h-5 w-5 text-muted-foreground" />
+                </div>
+                <div className="bg-card/80 border border-border/50 rounded-3xl rounded-bl-lg px-6 py-4 shadow-sm backdrop-blur-sm">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 bg-muted-foreground/60 rounded-full animate-bounce" />
+                    <div className="w-2.5 h-2.5 bg-muted-foreground/60 rounded-full animate-bounce delay-100" />
+                    <div className="w-2.5 h-2.5 bg-muted-foreground/60 rounded-full animate-bounce delay-200" />
                   </div>
                 </div>
               </div>
