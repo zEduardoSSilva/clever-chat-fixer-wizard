@@ -82,21 +82,21 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
   };
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col max-h-screen">
       <div className="flex-shrink-0 p-6 border-b border-border">
         <h2 className="text-xl font-semibold text-foreground">Configurações do Chat</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Configure a integração com n8n e personalize sua experiência de chat
         </p>
       </div>
-      <div className="flex-1 overflow-auto p-6">
-        <Tabs defaultValue="webhook" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+      <div className="flex-1 overflow-y-auto p-6">
+        <Tabs defaultValue="webhook" className="w-full h-full flex flex-col">
+          <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
             <TabsTrigger value="webhook">Webhook n8n</TabsTrigger>
             <TabsTrigger value="preferences">Preferências</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="webhook" className="space-y-4">
+          <TabsContent value="webhook" className="space-y-4 flex-1 overflow-y-auto">
             <div className="space-y-2">
               <Label htmlFor="webhook-url">URL do Webhook n8n</Label>
               <div className="flex gap-2">
@@ -167,7 +167,7 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
             </div>
           </TabsContent>
 
-          <TabsContent value="preferences" className="space-y-4">
+          <TabsContent value="preferences" className="space-y-4 flex-1 overflow-y-auto">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
@@ -197,13 +197,12 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
             </div>
           </TabsContent>
         </Tabs>
-
-        <div className="flex gap-2 mt-6">
-          <Button onClick={handleSaveSettings} className="w-full">
-            <Save className="h-4 w-4 mr-2" />
-            Salvar Configurações
-          </Button>
-        </div>
+      </div>
+      <div className="flex-shrink-0 p-6 border-t border-border">
+        <Button onClick={handleSaveSettings} className="w-full">
+          <Save className="h-4 w-4 mr-2" />
+          Salvar Configurações
+        </Button>
       </div>
     </div>
   );
