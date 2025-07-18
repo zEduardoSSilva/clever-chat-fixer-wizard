@@ -123,13 +123,26 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
             </div>
 
             <div className="space-y-3">
-              <Label>Exemplo de Payload JSON</Label>
+              <Label>Formatos de Resposta Suportados</Label>
               <div className="bg-muted p-3 rounded-md font-mono text-sm">
-                <pre>{`{
-  "message": "Sua mensagem aqui",
-  "timestamp": "${new Date().toISOString()}",
-  "userId": "user-123"
+                <div className="mb-3">
+                  <strong>Formato 1 (Padrão):</strong>
+                  <pre>{`{"response": "Sua resposta aqui"}`}</pre>
+                </div>
+                <div className="mb-3">
+                  <strong>Formato 2 (Seu workflow atual):</strong>
+                  <pre>{`{
+  "output": {
+    "Resumo": "Resposta principal",
+    "Descricao": "Detalhes",
+    "Valor": "Informações extras"
+  }
 }`}</pre>
+                </div>
+                <div>
+                  <strong>Formato 3 (Alternativo):</strong>
+                  <pre>{`{"message": "Sua resposta"}`}</pre>
+                </div>
               </div>
               <Button
                 variant="outline"

@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Bot, Settings, MessageSquare } from "lucide-react";
 
 const Index = () => {
-  const [webhookUrl, setWebhookUrl] = useState("");
+  const [webhookUrl, setWebhookUrl] = useState("https://investz.app.n8n.cloud/webhook/WorkFlow");
 
   return (
     <div className="min-h-screen bg-gradient-chat">

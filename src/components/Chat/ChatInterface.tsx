@@ -65,7 +65,37 @@ export function ChatInterface({
       }
 
       const data = await response.json();
-      return data.response || data.message || "Resposta recebida com sucesso!";
+      
+      // Processar diferentes formatos de resposta do n8n
+      let responseText = "";
+      
+      if (data.response) {
+        // Formato padrão: {"response": "texto"}
+        responseText = data.response;
+      } else if (data.output) {
+        // Formato do seu n8n: {"output": {...}}
+        if (data.output.Resumo) {
+          responseText = data.output.Resumo;
+        } else if (data.output.Descricao) {
+          responseText = data.output.Descricao;
+        } else {
+          // Se não tem Resumo nem Descrição, pegar todos os campos relevantes
+          const campos = [];
+          if (data.output.Descricao) campos.push(`**Ingredientes:** ${data.output.Descricao}`);
+          if (data.output.Valor) campos.push(`**Porção:** ${data.output.Valor}`);
+          if (data.output.Categoria) campos.push(`**Categoria:** ${data.output.Categoria}`);
+          if (data.output.Resumo) campos.push(`**Resumo:** ${data.output.Resumo}`);
+          responseText = campos.length > 0 ? campos.join('\n\n') : JSON.stringify(data.output, null, 2);
+        }
+      } else if (data.message) {
+        // Outro formato possível: {"message": "texto"}
+        responseText = data.message;
+      } else {
+        // Fallback: converter o objeto inteiro para texto legível
+        responseText = JSON.stringify(data, null, 2);
+      }
+      
+      return responseText || "Resposta recebida com sucesso!";
     } catch (error) {
       console.error("Erro ao enviar mensagem para n8n:", error);
       throw error;
