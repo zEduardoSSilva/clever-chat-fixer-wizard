@@ -29,33 +29,38 @@ export function ChatInput({ onSendMessage, disabled, isLoading }: ChatInputProps
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-2 p-4 border-t border-chat-border bg-chat-input-background">
-      <div className="flex-1 relative">
-        <Textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder="Digite sua mensagem..."
-          disabled={disabled || isLoading}
-          className={cn(
-            "min-h-[44px] max-h-32 resize-none pr-12 bg-chat-input-background border-chat-border",
-            "focus:ring-2 focus:ring-primary focus:border-transparent"
-          )}
-          rows={1}
-        />
-        <Button
-          type="submit"
-          size="sm"
-          disabled={!message.trim() || disabled || isLoading}
-          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 p-0 bg-gradient-primary hover:opacity-90"
-        >
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
-        </Button>
-      </div>
-    </form>
+    <div className="p-4 bg-gradient-to-t from-background/80 to-transparent backdrop-blur-sm">
+      <form onSubmit={handleSubmit} className="flex gap-3">
+        <div className="flex-1 relative">
+          <div className="bg-card/90 backdrop-blur-sm rounded-2xl border border-border/50 shadow-lg">
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Digite sua mensagem..."
+              disabled={disabled || isLoading}
+              className={cn(
+                "min-h-[56px] max-h-32 resize-none border-0 bg-transparent px-4 py-4 pr-16",
+                "focus:ring-0 focus:outline-none placeholder:text-muted-foreground/60",
+                "rounded-2xl"
+              )}
+              rows={1}
+            />
+            <Button
+              type="submit"
+              size="sm"
+              disabled={!message.trim() || disabled || isLoading}
+              className="absolute right-3 top-1/2 -translate-y-1/2 h-10 w-10 p-0 bg-gradient-primary hover:opacity-90 rounded-xl shadow-md"
+            >
+              {isLoading ? (
+                <Loader2 className="h-5 w-5 animate-spin" />
+              ) : (
+                <Send className="h-5 w-5" />
+              )}
+            </Button>
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { Bot, Settings, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { useToast } from "@/hooks/use-toast";
+import { useModernToast } from "@/hooks/use-modern-toast";
 
 interface Conversation {
   id: string;
@@ -29,19 +29,20 @@ export function AppSidebar({
   onSelectConversation,
   onDeleteConversation,
 }: AppSidebarProps) {
-  const { toast } = useToast();
+  const { showToast, ToastContainer } = useModernToast();
 
   const handleDeleteConversation = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
     onDeleteConversation(id);
-    toast({
+    showToast({
       title: "Conversa excluída",
       description: "A conversa foi removida do histórico.",
+      variant: "success",
     });
   };
 
   return (
-    <div className="flex h-screen w-80 flex-col bg-sidebar border-r border-sidebar-border">
+    <div className="flex h-screen w-80 flex-col bg-sidebar border-r border-sidebar-border shadow-2xl shadow-black/20">
       {/* Header */}
       <div className="flex flex-col p-4 border-b border-sidebar-border">
         <div className="flex items-center gap-3 mb-4">
@@ -123,6 +124,9 @@ export function AppSidebar({
           </Button>
         </div>
       </div>
+      
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 }

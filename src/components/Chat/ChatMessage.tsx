@@ -35,10 +35,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
       
       <div
         className={cn(
-          "rounded-2xl px-4 py-3 max-w-full break-words",
+          "rounded-2xl px-4 py-3 max-w-full break-words shadow-sm backdrop-blur-sm",
           message.isUser
-            ? "bg-chat-message-user text-chat-message-user-text rounded-br-md"
-            : "bg-chat-message-bot text-chat-message-bot-text border border-chat-border rounded-bl-md"
+            ? "bg-gradient-primary text-primary-foreground rounded-br-md shadow-lg"
+            : "bg-card/80 text-card-foreground border border-border/50 rounded-bl-md"
         )}
       >
         <p className="text-sm leading-relaxed whitespace-pre-wrap">

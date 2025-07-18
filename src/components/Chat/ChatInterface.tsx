@@ -4,7 +4,7 @@ import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { Button } from "@/components/ui/button";
 import { Trash2, Settings } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
+import { useModernToast } from "@/hooks/use-modern-toast";
 
 interface Message {
   id: string;
@@ -38,7 +38,7 @@ export function ChatInterface({
   );
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { toast } = useToast();
+  const { showToast, ToastContainer } = useModernToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -161,10 +161,10 @@ export function ChatInterface({
 
       setMessages((prev) => [...prev, errorMessage]);
       
-      toast({
+      showToast({
         title: "Erro de conexão",
         description: "Não foi possível conectar com o n8n. Verifique a configuração do webhook.",
-        variant: "destructive",
+        variant: "error",
       });
     } finally {
       setIsLoading(false);
@@ -180,14 +180,15 @@ export function ChatInterface({
         timestamp: new Date(),
       },
     ]);
-    toast({
+    showToast({
       title: "Chat limpo",
       description: "Todas as mensagens foram removidas.",
+      variant: "success",
     });
   };
 
   return (
-    <div className="flex flex-col h-full bg-chat-background">
+    <div className="flex flex-col h-full relative" style={{ background: 'var(--chat-modern-bg)' }}>
       {/* Chat Header */}
       <div className="flex-shrink-0 p-4 border-b border-chat-border">
         <div className="flex items-center justify-between">
@@ -235,13 +236,16 @@ export function ChatInterface({
       </div>
 
       {/* Chat Input */}
-      <div className="flex-shrink-0 border-t border-chat-border">
+      <div className="flex-shrink-0">
         <ChatInput
           onSendMessage={handleSendMessage}
           disabled={false}
           isLoading={isLoading}
         />
       </div>
+      
+      {/* Toast Container */}
+      <ToastContainer />
     </div>
   );
 }
