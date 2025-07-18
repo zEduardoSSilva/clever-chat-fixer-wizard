@@ -136,6 +136,7 @@ const Index = () => {
           <ChatSettings 
             onWebhookUpdate={setWebhookUrl}
             currentWebhookUrl={webhookUrl}
+            onClose={() => setIsSettingsOpen(false)}
           />
         </DialogContent>
       </Dialog>

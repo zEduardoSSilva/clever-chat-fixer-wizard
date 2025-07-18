@@ -5,15 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { Copy, Save, RefreshCw } from "lucide-react";
+import { Copy, Save, RefreshCw, X } from "lucide-react";
 
 interface ChatSettingsProps {
   onWebhookUpdate: (url: string) => void;
   currentWebhookUrl: string;
+  onClose: () => void;
 }
 
-export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSettingsProps) {
+export function ChatSettings({ onWebhookUpdate, currentWebhookUrl, onClose }: ChatSettingsProps) {
   const [webhookUrl, setWebhookUrl] = useState(currentWebhookUrl);
   const [autoScroll, setAutoScroll] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(false);
@@ -82,21 +84,32 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
   };
 
   return (
-    <div className="h-full flex flex-col max-h-screen">
-      <div className="flex-shrink-0 p-6 border-b border-border">
-        <h2 className="text-xl font-semibold text-foreground">Configurações do Chat</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Configure a integração com n8n e personalize sua experiência de chat
-        </p>
+    <div className="h-full flex flex-col bg-background">
+      <div className="flex-shrink-0 flex items-center justify-between p-4 border-b border-border">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Configurações do Chat</h2>
+          <p className="text-sm text-muted-foreground">
+            Configure a integração com n8n e personalize sua experiência
+          </p>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={onClose}
+          className="h-8 w-8 p-0"
+        >
+          <X className="h-4 w-4" />
+        </Button>
       </div>
-      <div className="flex-1 overflow-y-auto p-6">
-        <Tabs defaultValue="webhook" className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-2 flex-shrink-0">
+      <ScrollArea className="flex-1">
+        <div className="p-4">
+        <Tabs defaultValue="webhook" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
             <TabsTrigger value="webhook">Webhook n8n</TabsTrigger>
             <TabsTrigger value="preferences">Preferências</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="webhook" className="space-y-4 flex-1 overflow-y-auto">
+          <TabsContent value="webhook" className="space-y-6 mt-0">
             <div className="space-y-2">
               <Label htmlFor="webhook-url">URL do Webhook n8n</Label>
               <div className="flex gap-2">
@@ -167,7 +180,7 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
             </div>
           </TabsContent>
 
-          <TabsContent value="preferences" className="space-y-4 flex-1 overflow-y-auto">
+          <TabsContent value="preferences" className="space-y-6 mt-0">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
@@ -197,12 +210,18 @@ export function ChatSettings({ onWebhookUpdate, currentWebhookUrl }: ChatSetting
             </div>
           </TabsContent>
         </Tabs>
-      </div>
-      <div className="flex-shrink-0 p-6 border-t border-border">
-        <Button onClick={handleSaveSettings} className="w-full">
-          <Save className="h-4 w-4 mr-2" />
-          Salvar Configurações
-        </Button>
+        </div>
+      </ScrollArea>
+      <div className="flex-shrink-0 p-4 border-t border-border bg-background">
+        <div className="flex gap-3">
+          <Button onClick={handleSaveSettings} className="flex-1">
+            <Save className="h-4 w-4 mr-2" />
+            Salvar Configurações
+          </Button>
+          <Button variant="outline" onClick={onClose}>
+            Fechar
+          </Button>
+        </div>
       </div>
     </div>
   );
