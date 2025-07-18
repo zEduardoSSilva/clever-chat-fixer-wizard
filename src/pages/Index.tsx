@@ -132,7 +132,7 @@ const Index = () => {
 
       {/* Settings Dialog */}
       <Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-4xl h-[70vh]">
           <ChatSettings 
             onWebhookUpdate={setWebhookUrl}
             currentWebhookUrl={webhookUrl}
